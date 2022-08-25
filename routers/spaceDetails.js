@@ -17,7 +17,7 @@ router.get(`/:id`, async (req, res, next) => {
     });
 
     //if it doesnt exist show error
-    if (!spaceWithStories) return res.status(404).send("space not found");
+    if (!spaceWithStories) return res.status(400).send("space not found");
 
     //send it back
     res.json(spaceWithStories);
@@ -34,6 +34,7 @@ router.delete("/:id", async (req, res, next) => {
     res.send(`story with id ${id} deleted!`);
   } catch (e) {
     console.log(e.message);
+    next(e.message);
   }
 });
 
