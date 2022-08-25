@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: DataTypes.STRING,
       description: DataTypes.TEXT,
-      backgroundColor: DataTypes.STRING,
-      color: DataTypes.STRING,
+      backgroundColor: { type: DataTypes.STRING, defaultValue: "#ffffff" },
+      color: { type: DataTypes.STRING, defaultValue: "#000000" },
     },
     {
       sequelize,
