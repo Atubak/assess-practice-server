@@ -24,7 +24,7 @@ app.use(express.json());
 //routes
 app.use("/", homeRouter);
 app.use("/auth", authRouter);
-app.use("/spaceDetails", spaceDetailsRouter);
+app.use("/spacedetails", spaceDetailsRouter);
 
 //start listening
 app.listen(PORT, () => {

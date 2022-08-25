@@ -26,4 +26,15 @@ router.get(`/:id`, async (req, res, next) => {
   }
 });
 
+router.delete("/:id", async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    //find instance of story by id and delete it
+    await storiesModel.destroy({ where: { id: id } });
+    res.send(`story with id ${id} deleted!`);
+  } catch (e) {
+    console.log(e.message);
+  }
+});
+
 module.exports = router;

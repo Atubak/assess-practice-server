@@ -6,6 +6,7 @@ const authMiddleware = require("../auth/middleware");
 //models
 const User = require("../models/").user;
 const spaceModel = require("../models").space;
+const storyModel = require("../models").story;
 
 const { SALT_ROUNDS } = require("../config/constants");
 
@@ -22,7 +23,11 @@ router.post("/login", async (req, res, next) => {
         .send({ message: "Please provide both email and password" });
     }
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+      include: { model: spaceModel, include: { model: storyModel } },
+    });
+    console.log(user);
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(400).send({
@@ -31,6 +36,7 @@ router.post("/login", async (req, res, next) => {
     }
 
     delete user.dataValues["password"]; // don't send back the password hash
+
     const token = toJWT({ userId: user.id });
     return res.status(200).send({ token, user: user.dataValues });
   } catch (error) {
@@ -84,9 +90,18 @@ router.post("/signup", async (req, res) => {
 // - get the users email & name using only their token
 // - checking if a token is (still) valid
 router.get("/me", authMiddleware, async (req, res) => {
+  const { id } = req.user;
+  //get the users space
+  //include the spaces stories
+  const userSpace = await spaceModel.findOne({
+    where: { userId: id },
+    include: { model: storyModel },
+  });
+  //send it back with the user datavalues
+
   // don't send back the password hash
   delete req.user.dataValues["password"];
-  res.status(200).send({ ...req.user.dataValues });
+  res.status(200).send({ ...req.user.dataValues, space: userSpace });
 });
 
 module.exports = router;
