@@ -6,6 +6,7 @@ const corsMiddleWare = require("cors");
 const authRouter = require("./routers/auth");
 const homeRouter = require("./routers/home");
 const spaceDetailsRouter = require("./routers/spaceDetails");
+const storiesRouter = require("./routers/stories");
 
 //constants
 const { PORT } = require("./config/constants");
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use("/", homeRouter);
 app.use("/auth", authRouter);
 app.use("/spacedetails", spaceDetailsRouter);
+app.use("/stories", storiesRouter);
 
 //start listening
 app.listen(PORT, () => {
