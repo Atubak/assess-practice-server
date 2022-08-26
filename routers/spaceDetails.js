@@ -17,7 +17,15 @@ router.get(`/:id`, async (req, res, next) => {
     });
 
     //if it doesnt exist show error
-    if (!spaceWithStories) return res.status(400).send("space not found");
+    //also gives error if there is no story associated with user
+    //in that case just return the space without stories
+    if (!spaceWithStories) {
+      const spaceWithoutStories = await spaceModel.findByPk(id);
+
+      if (!spaceWithoutStories) return res.status(400).send("space not found");
+
+      res.json(spaceWithoutStories);
+    }
 
     //send it back
     res.json(spaceWithStories);
