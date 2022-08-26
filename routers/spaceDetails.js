@@ -2,6 +2,9 @@ const { Router } = require("express");
 
 const router = new Router();
 
+//middleware
+const authMiddleware = require("../auth/middleware");
+
 //model
 const spaceModel = require("../models").space;
 const storiesModel = require("../models").story;
@@ -40,6 +43,27 @@ router.delete("/:id", async (req, res, next) => {
     //find instance of story by id and delete it
     await storiesModel.destroy({ where: { id: id } });
     res.send(`story with id ${id} deleted!`);
+  } catch (e) {
+    console.log(e.message);
+    next(e.message);
+  }
+});
+
+//endpoint to edit the space properties of a user
+router.put(`/:id`, authMiddleware, async (req, res, next) => {
+  //id of the space in question
+  const { id } = req.params;
+  const updatedProperties = req.body;
+  console.log("updatedprops in put endpoint", updatedProperties);
+  try {
+    const updatedSpace = await spaceModel.update(updatedProperties, {
+      where: { id: id },
+    });
+    console.log("updated", updatedSpace);
+    //updatedSpace is an array with one element which is the number 1
+
+    //update works, now just need to send it back to redux
+    res.send("success!");
   } catch (e) {
     console.log(e.message);
     next(e.message);
